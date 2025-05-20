@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { LanguageImportHandler } from './LanguageImportHandler.js';
 
-const extractPyImports = (content: string): string[] => {
+const extractPyImports = async (content: string): Promise<string[]> => {
   const result: string[] = [];
   const fromRegex = /from\s+([.\w]+)\s+import\s+([\w*, ]+)/g;
   const importRegex = /import\s+([.\w]+)/g;

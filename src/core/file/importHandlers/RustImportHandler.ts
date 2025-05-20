@@ -2,7 +2,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import type { LanguageImportHandler } from './LanguageImportHandler.js';
 
-const extractRustImports = (content: string): string[] => {
+const extractRustImports = async (content: string): Promise<string[]> => {
   const modRegex = /mod\s+([A-Za-z0-9_]+)/g;
   const useRegex = /use\s+(?:crate|self|super)::([A-Za-z0-9_:]+)/g;
   const imports = [
