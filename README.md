@@ -459,6 +459,7 @@ Instruction
 - `-i, --ignore <patterns>`: Additional ignore patterns (comma-separated)
 - `--no-gitignore`: Disable .gitignore file usage
 - `--no-default-patterns`: Disable default patterns
+- `--include-imports-depth <number>`: Include imported files up to the specified depth (JavaScript/TypeScript, Python, and Rust)
 
 #### Remote Repository Options
 - `--remote <url>`: Process a remote Git repository

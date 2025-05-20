@@ -53,6 +53,7 @@ export const repomixConfigBaseSchema = z.object({
     })
     .optional(),
   include: z.array(z.string()).optional(),
+  includeImportsDepth: z.number().int().min(0).optional(),
   ignore: z
     .object({
       useGitignore: z.boolean().optional(),
@@ -116,6 +117,7 @@ export const repomixConfigDefaultSchema = z.object({
     })
     .default({}),
   include: z.array(z.string()).default([]),
+  includeImportsDepth: z.number().int().min(0).default(0),
   ignore: z
     .object({
       useGitignore: z.boolean().default(true),

@@ -77,6 +77,11 @@ export const run = async () => {
       .option('-i, --ignore <patterns>', 'additional ignore patterns (comma-separated)')
       .option('--no-gitignore', 'disable .gitignore file usage')
       .option('--no-default-patterns', 'disable default patterns')
+      .option(
+        '--include-imports-depth <number>',
+        'include imported files up to specified depth (JavaScript/TypeScript, Python, Rust)',
+        Number.parseInt,
+      )
       // Remote Repository Options
       .option('--remote <url>', 'process a remote Git repository')
       .option(

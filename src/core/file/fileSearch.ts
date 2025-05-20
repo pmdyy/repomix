@@ -8,6 +8,7 @@ import { RepomixError } from '../../shared/errorHandle.js';
 import { logger } from '../../shared/logger.js';
 import { sortPaths } from './filePathSort.js';
 import { PermissionError, checkDirectoryPermissions } from './permissionCheck.js';
+import { collectImportedFiles } from './fileImportCollect.js';
 
 export interface FileSearchResult {
   filePaths: string[];
@@ -170,6 +171,15 @@ export const searchFiles = async (rootDir: string, config: RepomixConfigMerged):
     }
 
     logger.trace(`Filtered ${filePaths.length} files`);
+
+    if (config.includeImportsDepth && config.includeImportsDepth > 0) {
+      const imported = await collectImportedFiles(filePaths, rootDir, config.includeImportsDepth);
+      for (const f of imported) {
+        if (!filePaths.includes(f)) {
+          filePaths.push(f);
+        }
+      }
+    }
 
     return {
       filePaths: sortPaths(filePaths),
