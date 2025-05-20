@@ -32,7 +32,7 @@ export const collectImportedFilePaths = async (
     if (!content) continue;
     const handler = getImportHandler(path.extname(current));
     if (!handler) continue;
-    const imports = handler.extractImports(content);
+    const imports = await handler.extractImports(content);
     for (const spec of imports) {
       const resolved = await handler.resolveImportPath(spec, path.dirname(current), rootDir);
       if (!resolved) continue;

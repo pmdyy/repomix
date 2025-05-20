@@ -1,17 +1,43 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import type { SyntaxNode } from 'web-tree-sitter';
+import { getLanguageParserSingleton } from '../../treeSitter/parserSingleton.js';
 import type { LanguageImportHandler } from './LanguageImportHandler.js';
 
 export const jsExtensions = ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs', '.json'];
 
-const extractJsImports = (content: string): string[] => {
-  const importRegex = /import\s+(?:[^'";]+\s+from\s+)?['"]([^'";]+)['"]/g;
-  const requireRegex = /require\(\s*['"]([^'";]+)['"]\s*\)/g;
-  const imports = [
-    ...Array.from(content.matchAll(importRegex), (m) => m[1]),
-    ...Array.from(content.matchAll(requireRegex), (m) => m[1]),
-  ];
-  return imports.filter((p) => p.startsWith('.'));
+const extractJsImports = async (content: string): Promise<string[]> => {
+  const parser = await (await getLanguageParserSingleton()).getParserForLang('typescript');
+  const tree = parser.parse(content);
+  const imports: string[] = [];
+
+  const visit = (node: SyntaxNode) => {
+    if (node.type === 'import_statement') {
+      const source = node.childForFieldName('source');
+      if (source) {
+        const text = source.text.slice(1, -1);
+        if (text.startsWith('.')) {
+          imports.push(text);
+        }
+      }
+    } else if (node.type === 'call_expression') {
+      const callee = node.child(0);
+      if (callee?.type === 'identifier' && (callee.text === 'require' || callee.text === 'import')) {
+        const args = node.childForFieldName('arguments');
+        const arg = args?.namedChildren?.[0];
+        if (arg && arg.type === 'string') {
+          const text = arg.text.slice(1, -1);
+          if (text.startsWith('.')) {
+            imports.push(text);
+          }
+        }
+      }
+    }
+    for (const child of node.namedChildren) visit(child);
+  };
+
+  visit(tree.rootNode);
+  return imports;
 };
 
 const resolveJsImportPath: LanguageImportHandler['resolveImportPath'] = async (spec, fromDir, rootDir) => {

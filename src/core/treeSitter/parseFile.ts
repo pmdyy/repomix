@@ -2,16 +2,14 @@ import type { QueryCapture } from 'web-tree-sitter';
 import type { RepomixConfigMerged } from '../../config/configSchema.js';
 import { logger } from '../../shared/logger.js';
 import type { SupportedLang } from './lang2Query.js';
-import { LanguageParser } from './languageParser.js';
 import { type ParseContext, createParseStrategy } from './parseStrategies/ParseStrategy.js';
+import { getLanguageParserSingleton } from './parserSingleton.js';
 
 interface CapturedChunk {
   content: string;
   startRow: number;
   endRow: number;
 }
-
-let languageParserSingleton: LanguageParser | null = null;
 
 export const CHUNK_SEPARATOR = '⋮----';
 
@@ -79,14 +77,6 @@ export const parseFile = async (fileContent: string, filePath: string, config: R
     .map((chunk) => chunk.content)
     .join(`\n${CHUNK_SEPARATOR}\n`)
     .trim();
-};
-
-const getLanguageParserSingleton = async () => {
-  if (!languageParserSingleton) {
-    languageParserSingleton = new LanguageParser();
-    await languageParserSingleton.init();
-  }
-  return languageParserSingleton;
 };
 
 const filterDuplicatedChunks = (chunks: CapturedChunk[]): CapturedChunk[] => {
