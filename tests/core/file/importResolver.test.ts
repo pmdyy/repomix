@@ -99,6 +99,19 @@ describe('collectImportedFilePaths', () => {
     expect(result).toEqual(['utils.ts']);
   });
 
+  test("resolves '.js' spec to TypeScript source", async () => {
+    await fs.writeFile(path.join(tempDir, 'index.ts'), "import { x } from './util.js';");
+    await fs.writeFile(path.join(tempDir, 'util.ts'), 'export const x = 1;');
+
+    const config = createMockConfig({
+      include: ['index.ts'],
+      input: { imports: { enabled: true } },
+    });
+
+    const result = await collectImportedFilePaths(['index.ts'], tempDir, config);
+    expect(result).toEqual(['util.ts']);
+  });
+
   test('supports require syntax', async () => {
     await fs.writeFile(path.join(tempDir, 'index.js'), "const u = require('./util.js');");
     await fs.writeFile(path.join(tempDir, 'util.js'), "import './helper.js';");
