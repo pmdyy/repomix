@@ -195,6 +195,15 @@ export const buildCliConfig = (options: CliOptions): RepomixConfigCli => {
   if (options.tokenCountEncoding) {
     cliConfig.tokenCount = { encoding: options.tokenCountEncoding };
   }
+  if (options.importsMaxDepth !== undefined) {
+    cliConfig.input = {
+      ...cliConfig.input,
+      imports: {
+        ...cliConfig.input?.imports,
+        maxDepth: options.importsMaxDepth,
+      },
+    };
+  }
   if (options.instructionFilePath) {
     cliConfig.output = {
       ...cliConfig.output,

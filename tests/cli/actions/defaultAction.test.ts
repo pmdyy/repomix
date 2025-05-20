@@ -572,4 +572,22 @@ describe('defaultAction', () => {
       );
     });
   });
+
+  describe('importsMaxDepth option', () => {
+    it('should handle --imports-max-depth option', async () => {
+      const options: CliOptions = {
+        importsMaxDepth: 5,
+      };
+
+      await runDefaultAction(['.'], process.cwd(), options);
+
+      expect(configLoader.mergeConfigs).toHaveBeenCalledWith(
+        process.cwd(),
+        expect.anything(),
+        expect.objectContaining({
+          input: { imports: { maxDepth: 5 } },
+        }),
+      );
+    });
+  });
 });

@@ -475,6 +475,9 @@ Instruction
 #### Token Count Options
 - `--token-count-encoding <encoding>`: Specify token count encoding used by OpenAI's [tiktoken](https://github.com/openai/tiktoken) tokenizer (e.g., `o200k_base` for GPT-4o, `cl100k_base` for GPT-4/3.5). See [tiktoken model.py](https://github.com/openai/tiktoken/blob/main/tiktoken/model.py#L24) for encoding details.
 
+#### Import Options
+- `--imports-max-depth <number>`: Maximum depth for resolving imported files
+
 #### MCP
 - `--mcp`: Run as a [MCP (Model Context Protocol)](https://modelcontextprotocol.io) server
 
@@ -758,6 +761,8 @@ Here's an explanation of the configuration options:
 | Option                           | Description                                                                                                                  | Default                |
 |----------------------------------|------------------------------------------------------------------------------------------------------------------------------|------------------------|
 | `input.maxFileSize`              | Maximum file size in bytes to process. Files larger than this will be skipped                                                | `50000000`            |
+| `input.imports.enabled`          | Include imported files recursively | `false`                |
+| `input.imports.maxDepth`         | Maximum depth for resolving imports | `3`                    |
 | `output.filePath`                | The name of the output file                                                                                                  | `"repomix-output.xml"` |
 | `output.style`                   | The style of the output (`xml`, `markdown`, `plain`)                                                                         | `"xml"`                |
 | `output.parsableStyle`           | Whether to escape the output based on the chosen style schema. Note that this can increase token count.                      | `false`                |
@@ -794,7 +799,11 @@ Example configuration:
 ```json5
 {
   "input": {
-    "maxFileSize": 50000000
+    "maxFileSize": 50000000,
+    "imports": {
+      "enabled": false,
+      "maxDepth": 3
+    }
   },
   "output": {
     "filePath": "repomix-output.xml",
