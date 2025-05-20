@@ -114,6 +114,9 @@ export const buildCliConfig = (options: CliOptions): RepomixConfigCli => {
       useDefaultPatterns: options.defaultPatterns,
     };
   }
+  if (options.includeImportsDepth !== undefined) {
+    cliConfig.includeImportsDepth = options.includeImportsDepth;
+  }
   if (options.topFilesLen !== undefined) {
     cliConfig.output = {
       ...cliConfig.output,
