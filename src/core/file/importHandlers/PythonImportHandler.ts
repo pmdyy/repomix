@@ -13,22 +13,35 @@ const extractPyImports = (content: string): string[] => {
     for (const name of names) {
       if (base.startsWith('.')) {
         result.push(`${base}.${name}`);
+      } else {
+        result.push(base);
       }
     }
   }
   for (const m of content.matchAll(importRegex)) {
     const spec = m[1];
-    if (spec.startsWith('.')) {
-      result.push(spec);
-    }
+    result.push(spec);
   }
   return result;
 };
 
 const resolvePyImportPath: LanguageImportHandler['resolveImportPath'] = async (spec, fromDir, rootDir) => {
-  const rel = spec.replace(/^\.+/, (dots) => '../'.repeat(dots.length - 1)).replace(/\./g, '/');
-  const basePath = path.normalize(path.join(fromDir, rel));
-  const candidates = [path.join(rootDir, `${basePath}.py`), path.join(rootDir, basePath, '__init__.py')];
+  let baseRel: string;
+  if (spec.startsWith('.')) {
+    const rel = spec.replace(/^\.+/, (dots) => '../'.repeat(dots.length - 1)).replace(/\./g, '/');
+    baseRel = path.normalize(path.join(fromDir, rel));
+  } else {
+    const firstSeg = spec.split('.')[0];
+    try {
+      await fs.stat(path.join(rootDir, firstSeg));
+    } catch {
+      return null;
+    }
+    baseRel = spec.replace(/\./g, '/');
+  }
+
+  const baseAbs = path.join(rootDir, baseRel);
+  const candidates = [`${baseAbs}.py`, path.join(baseAbs, '__init__.py')];
   for (const filePath of candidates) {
     try {
       const stats = await fs.stat(filePath);
