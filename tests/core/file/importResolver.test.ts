@@ -18,7 +18,10 @@ afterEach(async () => {
 describe('collectImportedFilePaths', () => {
   test('collects imported files recursively', async () => {
     await fs.writeFile(path.join(tempDir, 'index.js'), "import { greet } from './utils.js';");
-    await fs.writeFile(path.join(tempDir, 'utils.js'), "import { helper } from './helper.js'; export function greet() {};");
+    await fs.writeFile(
+      path.join(tempDir, 'utils.js'),
+      "import { helper } from './helper.js'; export function greet() {};",
+    );
     await fs.writeFile(path.join(tempDir, 'helper.js'), 'export const helper = () => {}');
 
     const config = createMockConfig({
@@ -97,10 +100,7 @@ describe('collectImportedFilePaths', () => {
   });
 
   test('supports require syntax', async () => {
-    await fs.writeFile(
-      path.join(tempDir, 'index.js'),
-      "const u = require('./util.js');",
-    );
+    await fs.writeFile(path.join(tempDir, 'index.js'), "const u = require('./util.js');");
     await fs.writeFile(path.join(tempDir, 'util.js'), "import './helper.js';");
     await fs.writeFile(path.join(tempDir, 'helper.js'), 'console.log(1);');
 
@@ -123,11 +123,7 @@ describe('collectImportedFilePaths', () => {
       input: { imports: { enabled: true } },
     });
 
-    const result = await collectImportedFilePaths(
-      ['index.js', 'other.js'],
-      tempDir,
-      config,
-    );
+    const result = await collectImportedFilePaths(['index.js', 'other.js'], tempDir, config);
     expect(result).toEqual(['a.js']);
   });
 });

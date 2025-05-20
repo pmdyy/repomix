@@ -16,8 +16,26 @@ const extractJsImports = (content: string): string[] => {
 
 const resolveJsImportPath: LanguageImportHandler['resolveImportPath'] = async (spec, fromDir, rootDir) => {
   const basePath = path.normalize(path.join(fromDir, spec));
-  for (const ext of [''].concat(jsExtensions)) {
-    const filePath = path.join(rootDir, basePath + ext);
+  const ext = path.extname(basePath);
+  const baseWithoutExt = ext ? basePath.slice(0, -ext.length) : basePath;
+
+  const candidates: string[] = [];
+
+  // Try the spec as written first
+  candidates.push(basePath);
+
+  // Then try resolving by swapping extensions
+  for (const e of jsExtensions) {
+    candidates.push(baseWithoutExt + e);
+  }
+
+  // Also consider index files in the directory
+  for (const e of jsExtensions) {
+    candidates.push(path.join(baseWithoutExt, `index${e}`));
+  }
+
+  for (const candidate of candidates) {
+    const filePath = path.join(rootDir, candidate);
     try {
       const stats = await fs.stat(filePath);
       if (stats.isFile()) {
@@ -27,17 +45,7 @@ const resolveJsImportPath: LanguageImportHandler['resolveImportPath'] = async (s
       // ignore
     }
   }
-  for (const ext of jsExtensions) {
-    const indexPath = path.join(rootDir, basePath, `index${ext}`);
-    try {
-      const stats = await fs.stat(indexPath);
-      if (stats.isFile()) {
-        return path.relative(rootDir, indexPath);
-      }
-    } catch {
-      // ignore
-    }
-  }
+
   return null;
 };
 
