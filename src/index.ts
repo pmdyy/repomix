@@ -9,6 +9,7 @@ export { collectFiles } from './core/file/fileCollect.js';
 export { sortPaths } from './core/file/filePathSort.js';
 export { processFiles } from './core/file/fileProcess.js';
 export { searchFiles } from './core/file/fileSearch.js';
+export { collectImportedFilePaths } from './core/file/importResolver.js';
 export type { FileSearchResult } from './core/file/fileSearch.js';
 export { generateFileTree } from './core/file/fileTreeGenerate.js';
 
