@@ -49,6 +49,7 @@ export interface CliOptions extends OptionValues {
   mcp?: boolean;
 
   // Other Options
+  importsMaxDepth?: number;
   topFilesLen?: number;
   verbose?: boolean;
   quiet?: boolean;

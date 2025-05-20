@@ -91,6 +91,8 @@ export const run = async () => {
       .option('--no-security-check', 'disable security check')
       // Token Count Options
       .option('--token-count-encoding <encoding>', 'specify token count encoding (e.g., o200k_base, cl100k_base)')
+      // Import Options
+      .option('--imports-max-depth <number>', 'specify the maximum depth for resolving imports', Number.parseInt)
       // MCP
       .option('--mcp', 'run as a MCP server')
       // Other Options
