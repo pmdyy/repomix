@@ -52,7 +52,7 @@ index 123..456 100644
     // Sample config with diffs enabled
     const config: RepomixConfigMerged = {
       cwd: '/test',
-      input: { maxFileSize: 1000000 },
+      input: { maxFileSize: 1000000, imports: { enabled: false, maxDepth: 3 } },
       output: {
         filePath: 'output.txt',
         style: 'plain',
@@ -137,7 +137,7 @@ index 123..456 100644
     // Sample config with diffs disabled
     const config: RepomixConfigMerged = {
       cwd: '/test',
-      input: { maxFileSize: 1000000 },
+      input: { maxFileSize: 1000000, imports: { enabled: false, maxDepth: 3 } },
       output: {
         filePath: 'output.txt',
         style: 'plain',
@@ -213,7 +213,7 @@ index 123..456 100644
     // Sample config with diffs enabled but no content
     const config: RepomixConfigMerged = {
       cwd: '/test',
-      input: { maxFileSize: 1000000 },
+      input: { maxFileSize: 1000000, imports: { enabled: false, maxDepth: 3 } },
       output: {
         filePath: 'output.txt',
         style: 'plain',
