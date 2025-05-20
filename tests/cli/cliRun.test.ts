@@ -60,6 +60,7 @@ describe('cliRun', () => {
         cwd: process.cwd(),
         input: {
           maxFileSize: 50 * 1024 * 1024,
+          imports: { enabled: false, maxDepth: 3 },
         },
         output: {
           filePath: 'repomix-output.txt',
@@ -111,6 +112,7 @@ describe('cliRun', () => {
         cwd: process.cwd(),
         input: {
           maxFileSize: 50 * 1024 * 1024,
+          imports: { enabled: false, maxDepth: 3 },
         },
         output: {
           filePath: 'repomix-output.txt',

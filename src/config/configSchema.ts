@@ -18,6 +18,12 @@ export const repomixConfigBaseSchema = z.object({
   input: z
     .object({
       maxFileSize: z.number().optional(),
+      imports: z
+        .object({
+          enabled: z.boolean().optional(),
+          maxDepth: z.number().int().min(1).optional(),
+        })
+        .optional(),
     })
     .optional(),
   output: z
@@ -75,6 +81,12 @@ export const repomixConfigDefaultSchema = z.object({
         .int()
         .min(1)
         .default(50 * 1024 * 1024), // Default: 50MB
+      imports: z
+        .object({
+          enabled: z.boolean().default(false),
+          maxDepth: z.number().int().min(1).default(3),
+        })
+        .default({}),
     })
     .default({}),
   output: z

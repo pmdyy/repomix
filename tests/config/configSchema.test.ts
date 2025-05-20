@@ -62,6 +62,7 @@ describe('configSchema', () => {
       const validConfig = {
         input: {
           maxFileSize: 50 * 1024 * 1024,
+          imports: { enabled: false, maxDepth: 3 },
         },
         output: {
           filePath: 'output.txt',
@@ -156,6 +157,7 @@ describe('configSchema', () => {
         cwd: '/path/to/project',
         input: {
           maxFileSize: 50 * 1024 * 1024,
+          imports: { enabled: false, maxDepth: 3 },
         },
         output: {
           filePath: 'merged-output.txt',

@@ -9,6 +9,7 @@ describe('Solidity File Parsing', () => {
     cwd: process.cwd(),
     input: {
       maxFileSize: 50 * 1024 * 1024,
+      imports: { enabled: false, maxDepth: 3 },
     },
     output: {
       filePath: 'output.txt',
