@@ -18,6 +18,10 @@ export const createMockConfig = (config: DeepPartial<RepomixConfigMerged> = {}):
     input: {
       ...defaultConfig.input,
       ...config.input,
+      imports: {
+        ...defaultConfig.input.imports,
+        ...config.input?.imports,
+      },
     },
     output: {
       ...defaultConfig.output,

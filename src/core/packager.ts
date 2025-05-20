@@ -5,6 +5,7 @@ import { sortPaths } from './file/filePathSort.js';
 import { processFiles } from './file/fileProcess.js';
 import { searchFiles } from './file/fileSearch.js';
 import type { RawFile } from './file/fileTypes.js';
+import { collectImportedFilePaths } from './file/importResolver.js';
 import { GitDiffResult, getGitDiffs } from './git/gitDiff.js';
 import { calculateMetrics } from './metrics/calculateMetrics.js';
 import { generateOutput } from './output/outputGenerate.js';
@@ -26,6 +27,7 @@ export interface PackResult {
 
 const defaultDeps = {
   searchFiles,
+  collectImportedFilePaths,
   collectFiles,
   processFiles,
   generateOutput,
@@ -50,10 +52,15 @@ export const pack = async (
 
   progressCallback('Searching for files...');
   const filePathsByDir = await Promise.all(
-    rootDirs.map(async (rootDir) => ({
-      rootDir,
-      filePaths: (await deps.searchFiles(rootDir, config)).filePaths,
-    })),
+    rootDirs.map(async (rootDir) => {
+      const searchResult = await deps.searchFiles(rootDir, config);
+      const imported = await deps.collectImportedFilePaths(searchResult.filePaths, rootDir, config);
+      const combined = Array.from(new Set([...searchResult.filePaths, ...imported]));
+      return {
+        rootDir,
+        filePaths: combined,
+      };
+    }),
   );
 
   // Sort file paths
