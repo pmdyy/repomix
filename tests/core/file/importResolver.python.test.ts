@@ -30,4 +30,20 @@ describe('collectImportedFilePaths python', () => {
     const result = await collectImportedFilePaths(['index.py'], tempDir, config);
     expect(result).toEqual(['pkg/helper.py']);
   });
+
+  test('resolves python absolute imports', async () => {
+    await fs.mkdir(path.join(tempDir, 'sub'));
+    await fs.writeFile(path.join(tempDir, 'sub', 'index.py'), 'import pkg.mod\n');
+    await fs.mkdir(path.join(tempDir, 'pkg'));
+    await fs.writeFile(path.join(tempDir, 'pkg', '__init__.py'), '');
+    await fs.writeFile(path.join(tempDir, 'pkg', 'mod.py'), 'def fn(): pass');
+
+    const config = createMockConfig({
+      include: ['sub/index.py'],
+      input: { imports: { enabled: true } },
+    });
+
+    const result = await collectImportedFilePaths(['sub/index.py'], tempDir, config);
+    expect(result).toEqual(['pkg/mod.py']);
+  });
 });
